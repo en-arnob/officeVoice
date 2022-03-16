@@ -4,20 +4,18 @@ const morgan = require("morgan");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
+const config = require("config");
+const { bindUserWithRequest } = require("./middleware/authMiddleware");
+const setLocals = require("./middleware/setLocals");
 
 //Import routes
 
 const authRoutes = require("./routes/authRoutes");
 const feedRoute = require("./routes/feedRoute");
 
-const { bindUserWithRequest } = require("./middleware/authMiddleware");
-const setLocals = require("./middleware/setLocals");
-
 let DB_ADMIN = process.env.DB_ADMIN;
 let DB_PASSWORD = process.env.DB_PASSWORD;
 
-// const dbUri =
-//   "mongodb+srv://khalid15:iLOVEFUCkingPASS@officevoice.wmmle.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 const dbUri = `mongodb+srv://${DB_ADMIN}:${DB_PASSWORD}@officevoice.wmmle.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 
 const store = new MongoDBStore({
@@ -27,6 +25,7 @@ const store = new MongoDBStore({
 });
 
 const app = express();
+// console.log(config.get("name"));
 
 //Setup View Engine
 app.set("view engine", "ejs");
