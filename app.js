@@ -27,9 +27,12 @@ const app = express();
 app.set("view engine", "ejs");
 app.set("views", "views");
 
+if (app.get("env").toLowerCase() === "development") {
+  app.use(morgan("dev"));
+}
+
 //Middleware Array
 const middleware = [
-  morgan("dev"),
   express.static("public"),
   express.urlencoded({ extended: true }),
   express.json(),
