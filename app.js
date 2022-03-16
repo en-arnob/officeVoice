@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
@@ -12,8 +13,12 @@ const feedRoute = require("./routes/feedRoute");
 const { bindUserWithRequest } = require("./middleware/authMiddleware");
 const setLocals = require("./middleware/setLocals");
 
-const dbUri =
-  "mongodb+srv://khalid15:iLOVEFUCkingPASS@officevoice.wmmle.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+let DB_ADMIN = process.env.DB_ADMIN;
+let DB_PASSWORD = process.env.DB_PASSWORD;
+
+// const dbUri =
+//   "mongodb+srv://khalid15:iLOVEFUCkingPASS@officevoice.wmmle.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const dbUri = `mongodb+srv://${DB_ADMIN}:${DB_PASSWORD}@officevoice.wmmle.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 
 const store = new MongoDBStore({
   uri: dbUri,
@@ -27,9 +32,12 @@ const app = express();
 app.set("view engine", "ejs");
 app.set("views", "views");
 
+if (app.get("env").toLowerCase() === "development") {
+  app.use(morgan("dev"));
+}
+
 //Middleware Array
 const middleware = [
-  morgan("dev"),
   express.static("public"),
   express.urlencoded({ extended: true }),
   express.json(),
